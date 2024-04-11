@@ -7,24 +7,6 @@
 描述：
 """
 
-# 修改包下载的源为国内的源
-
-pip config set global.index-url https://pypi.doubanio.com/simple
-
-# 更好的交互环境
-
-pip install ipython
-pip unstall ipython
-
-# 变量类型
-
-type()
-int()
-float()
-str()
-chr()
-ord()
-
 
 
 
