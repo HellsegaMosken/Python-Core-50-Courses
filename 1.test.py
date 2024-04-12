@@ -240,10 +240,3 @@ for factor in range(x, 0, -1):
 
 
 
-
-
-
-
-
-
-

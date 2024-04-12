@@ -7,11 +7,12 @@
 描述：
 """
 
-# ------------ print ------------
+# region    # ------------ print ------------
 print('%.1f华氏度 = %.1f摄氏度' % (f, c))
 print(f'{f:.1f}华氏度 = {c:.1f}摄氏度')
+# endregion
 
-# ------------ if ------------
+# region    # ------------ if ------------
 if x > 1:
     y = 3 * x - 5
 elif x >= -1:
@@ -19,16 +20,16 @@ elif x >= -1:
 else:
     y = 5 * x + 3
 print(f'f({x}) = {y}')
+# endregion
 
-# ------------ for ------------
-
+# region    # ------------ for ------------
 total = 0
 for x in range(2, 101, 2):
     total += x
 print(total)
+# endregion
 
-# ------------ while循环 ------------
-
+# region    # ------------ while循环 ------------
 import random
 
 # 产生一个1-100范围的随机数
@@ -46,5 +47,6 @@ while True:
         break
 # 当退出while循环的时候显示用户一共猜了多少次
 print(f'你总共猜了{counter}次')
+# endregion
 
 
