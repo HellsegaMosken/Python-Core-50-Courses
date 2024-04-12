@@ -232,6 +232,194 @@ for factor in range(x, 0, -1):
         break
 # endregion
 
+# region    # ------------ 列表 ------------
+items1 = list(range(1, 10))
+print(items1)    # [1, 2, 3, 4, 5, 6, 7, 8, 9]
+items2 = list('hello')
+print(items2)    # ['h', 'e', 'l', 'l', 'o']
+
+items1 = [35, 12, 99, 68, 55, 87]
+items2 = [45, 8, 29]
+# endregion
+
+# region    # ------------ 列表的运算符 ------------
+# 列表的拼接
+items3 = items1 + items2
+print(items3)    # [35, 12, 99, 68, 55, 87, 45, 8, 29]
+
+# 列表的重复
+items4 = ['hello'] * 3
+print(items4)    # ['hello', 'hello', 'hello']
+
+# 列表的成员运算
+print(100 in items3)        # False
+print('hello' in items4)    # True
+
+# 获取列表的长度(元素个数)
+size = len(items3)
+print(size)                 # 9
+
+# 列表的索引
+print(items3[0], items3[-size])        # 35 35
+items3[-1] = 100
+print(items3[size - 1], items3[-1])    # 100 100
+
+# 列表的切片
+print(items3[:5])          # [35, 12, 99, 68, 55]
+print(items3[4:])          # [55, 87, 45, 8, 100]
+print(items3[-5:-7:-1])    # [55, 68]
+print(items3[::-2])        # [100, 45, 55, 99, 35]
+
+# 列表的比较运算
+items5 = [1, 2, 3, 4]
+items6 = list(range(1, 5))
+# 两个列表比较相等性比的是对应索引位置上的元素是否相等
+print(items5 == items6)    # True
+items7 = [3, 2, 1]
+# 两个列表比较大小比的是对应索引位置上的元素的大小
+print(items5 <= items7)    # True
+#endregion
+
+# region    # ------------ 列表元素的遍历 ------------
+### 方法一
+items = ['Python', 'Java', 'Go', 'Kotlin']
+
+for index in range(len(items)):
+    print(items[index])
+
+### 方法二
+items = ['Python', 'Java', 'Go', 'Kotlin']
+
+for item in items:
+    print(item)
+#endregion
+
+# region    案例：掷色子统计每个点数出现次数
+import random
+
+counters = [0] * 6
+for _ in range(6000):
+    face = random.randint(1, 6)
+    counters[face - 1] += 1
+for face in range(1, 7):
+    print(f'{face}点出现了{counters[face - 1]}次')
+#endregion
+
+# region    # ------------ 列表的方法：添加和删除元素 ------------
+items = ['Python', 'Java', 'Go', 'Kotlin']
+
+# 使用append方法在列表尾部添加元素
+items.append('Swift')
+print(items)    # ['Python', 'Java', 'Go', 'Kotlin', 'Swift']
+# 使用insert方法在列表指定索引位置插入元素
+items.insert(2, 'SQL')
+print(items)    # ['Python', 'Java', 'SQL', 'Go', 'Kotlin', 'Swift']
+
+# 删除指定的元素
+items.remove('Java')
+print(items)    # ['Python', 'SQL', 'Go', 'Kotlin', 'Swift']
+# 删除指定索引位置的元素，并返回删除的元素
+items.pop(0)
+items.pop(len(items) - 1)
+print(items)    # ['SQL', 'Go', 'Kotlin']
+# 删除指定索引位置的元素，并返回删除后的列表，del的删除性能略优
+items = ['Python', 'Java', 'Go', 'Kotlin']
+del items[1]
+print(items)    # ['Python', 'Go', 'Kotlin']
+
+# 清空列表中的元素
+items.clear()
+print(items)    # []
+#endregion
+
+# region    # ------------ 列表的方法：元素位置和次数 ------------
+items = ['Python', 'Java', 'Java', 'Go', 'Kotlin', 'Python']
+# 查找元素的索引位置
+print(items.index('Python'))       # 0
+print(items.index('Python', 2))    # 5
+# 注意：虽然列表中有'Java'，但是从索引为3这个位置开始后面是没有'Java'的
+print(items.index('Java', 3))      # ValueError: 'Java' is not in list
+
+items = ['Python', 'Java', 'Java', 'Go', 'Kotlin', 'Python']
+# 查找元素出现的次数
+print(items.count('Python'))    # 2
+print(items.count('Go'))        # 1
+print(items.count('Swfit'))     # 0
+#endregion
+
+# region    # ------------ 列表的方法：元素排序和反转 ------------
+items = ['Python', 'Java', 'Go', 'Kotlin', 'Python']
+
+# 排序
+items.sort()
+print(items)    # ['Go', 'Java', 'Kotlin', 'Python', 'Python']
+# 反转
+items.reverse()
+print(items)    # ['Python', 'Python', 'Kotlin', 'Java', 'Go']
+#endregion
+
+# region    # ------------ 列表的方法：列表的生成式 ------------
+### 方法一：for循环
+# 创建一个由1到9的数字构成的列表
+items1 = []
+for x in range(1, 10):
+    items1.append(x)
+print(items1)
+
+# 创建一个由'hello world'中除空格和元音字母外的字符构成的列表
+items2 = []
+for x in 'hello world':
+    if x not in ' aeiou':
+        items2.append(x)
+print(items2)
+
+# 创建一个由个两个字符串中字符的笛卡尔积构成的列表
+items3 = []
+for x in 'ABC':
+    for y in '12':
+        items3.append(x + y)
+print(items3)
+
+### 方法二：生成式（性能更优）
+# 创建一个由1到9的数字构成的列表
+items1 = [x for x in range(1, 10)]
+print(items1)    # [1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+# 创建一个由'hello world'中除空格和元音字母外的字符构成的列表
+items2 = [x for x in 'hello world' if x not in ' aeiou']
+print(items2)    # ['h', 'l', 'l', 'w', 'r', 'l', 'd']
+
+# 创建一个由个两个字符串中字符的笛卡尔积构成的列表
+items3 = [x + y for x in 'ABC' for y in '12']
+print(items3)    # ['A1', 'A2', 'B1', 'B2', 'C1', 'C2']
+#endregion
+
+# region    # ------------ 列表的方法：嵌套的列表 ------------
+### 错误方法
+scores = [[0] * 3] * 5
+print(scores)    # [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]]
+
+scores[0][0] = 95
+print(scores)
+
+### 正确方法
+scores = [[0] * 3 for _ in range(5)]
+scores[0][0] = 95
+print(scores)
+# [[95, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]]
+#endregion
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
