@@ -409,15 +409,103 @@ print(scores)
 # [[95, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]]
 #endregion
 
+# region    # ------------ 元组：定义和使用 ------------
+# 定义一个三元组
+t1 = (30, 10, 55)
+# 定义一个四元组
+t2 = ('骆昊', 40, True, '四川成都')
 
+# 查看变量的类型
+print(type(t1), type(t2))    # <class 'tuple'> <class 'tuple'>
+# 查看元组中元素的数量
+print(len(t1), len(t2))      # 3 4
 
+# 通过索引运算获取元组中的元素
+print(t1[0], t1[-3])         # 30 30
+print(t2[3], t2[-1])         # 四川成都 四川成都
 
+# 循环遍历元组中的元素
+for member in t2:
+    print(member)
 
+# 成员运算
+print(100 in t1)    # False
+print(40 in t2)     # True
 
+# 拼接
+t3 = t1 + t2
+print(t3)           # (30, 10, 55, '骆昊', 40, True, '四川成都')
 
+# 切片
+print(t3[::3])      # (30, '骆昊', '四川成都')
 
+# 比较运算
+print(t1 == t3)    # False
+print(t1 >= t3)    # False
+print(t1 < (30, 11, 55))    # True
+#endregion
 
+# region    # ------------ 元组应用场景：打包 ------------
+# 打包
+a = 1, 10, 100
+b = [1, 10, 100]
+print(type(a), a)    # <class 'tuple'> (1, 10, 100)
+print(type(b), b)    # <class 'tuple'> (1, 10, 100)
+# 解包
+i, j, k = a
+o, p, q = b
+print(i, j, k)       # 1 10 100
+print(o, p, q)       # 1 10 100
 
+a = [1, 10, 100, 1000]
+i, j, *k = a
+print(i, j, k)          # 1 10 [100, 1000]
+i, *j, k = a
+print(i, j, k)          # 1 [10, 100] 1000
+*i, j, k = a
+print(i, j, k)          # [1, 10] 100 1000
+*i, j = a
+print(i, j)             # [1, 10, 100] 1000
+i, *j = a
+print(i, j)             # 1 [10, 100, 1000]
+i, j, k, *l = a
+print(i, j, k, l)       # 1 10 100 [1000]
+i, j, k, l, *m = a
+print(i, j, k, l, m)    # 1 10 100 1000 []
+
+a, b, *c = range(1, 10)
+print(a, b, c)
+a, b, c = [1, 10, 100]
+print(a, b, c)
+a, *b, c = 'hello'
+print(a, b, c)
+#endregion
+
+# region    # ------------ 元组应用场景：交换两个变量的值 ------------
+a, b = b, a
+a, b, c = b, c, a
+#endregion
+
+# region    # ------------ 元组和列表的比较 ------------
+import sys
+import timeit
+
+a = list(range(100000))
+b = tuple(range(100000))
+print(sys.getsizeof(a), sys.getsizeof(b))    # 900120 800056
+
+print(timeit.timeit('[1, 2, 3, 4, 5, 6, 7, 8, 9]'))
+print(timeit.timeit('(1, 2, 3, 4, 5, 6, 7, 8, 9)'))
+#endregion
+
+# region    # ------------ 元组和列表的相互转换 ------------
+# 将元组转换成列表
+info = ('骆昊', 175, True, '四川成都')
+print(list(info))       # ['骆昊', 175, True, '四川成都']
+# 将列表转换成元组
+fruits = ['apple', 'banana', 'orange']
+print(tuple(fruits))    # ('apple', 'banana', 'orange')
+#endregion
 
 
 
