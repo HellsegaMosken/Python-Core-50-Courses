@@ -498,17 +498,563 @@ print(timeit.timeit('[1, 2, 3, 4, 5, 6, 7, 8, 9]'))
 print(timeit.timeit('(1, 2, 3, 4, 5, 6, 7, 8, 9)'))
 #endregion
 
-# region    # ------------ 元组和列表的相互转换 ------------
-# 将元组转换成列表
-info = ('骆昊', 175, True, '四川成都')
-print(list(info))       # ['骆昊', 175, True, '四川成都']
-# 将列表转换成元组
-fruits = ['apple', 'banana', 'orange']
-print(tuple(fruits))    # ('apple', 'banana', 'orange')
+# region    # ------------ 字符串 ------------
+s1 = 'hello, world!'
+s2 = "你好，世界！"
+print(s1, s2)
+# 以三个双引号或单引号开头的字符串可以折行
+s3 = '''
+hello, 
+world!
+'''
+print(s3)
+print(s3, end='')
+
+s1 = '\'hello, world!\''
+print(s1)
+s2 = '\\hello, world!\\'
+print(s2)
+
+# 字符串s1中\t是制表符，\n是换行符
+s1 = '\time up \now'
+print(s1)
+# 字符串s2中没有转义字符，每个字符都是原始含义
+s2 = r'\time up \now'
+print(s2)
+
+s1 = '\141\142\143\x61\x62\x63'
+s2 = '\u9a86\u660a'
+print(s1, s2)
 #endregion
 
+# region    # ------------ 字符串的运算：拼接和重复 ------------
+s1 = 'hello' + ' ' + 'world'
+print(s1)    # hello world
+s2 = '!' * 3
+print(s2)    # !!!
+s1 += s2     # s1 = s1 + s2
+print(s1)    # hello world!!!
+s1 *= 2      # s1 = s1 * 2
+print(s1)    # hello world!!!hello world!!!
+#endregion
 
+# region    # ------------ 字符串的运算：比较运算 ------------
+s1 = 'a whole new world'
+s2 = 'hello world'
+print(s1 == s2, s1 < s2)      # False True
+print(s2 == 'hello world')    # True
+print(s2 == 'Hello world')    # False
+print(s2 != 'Hello world')    # True
+s3 = '骆昊'
+print(ord('骆'), ord('昊'))               # 39558 26122
+s4 = '王大锤'
+print(ord('王'), ord('大'), ord('锤'))    # 29579 22823 38180
+print(s3 > s4, s3 <= s4)      # True False
 
+s1 = 'hello world'
+s2 = 'hello world'
+s3 = s2
+# 比较字符串的内容
+print(s1 == s2, s2 == s3)    # True True
+# 比较字符串的内存地址
+print(s1 is s2, s2 is s3)    # False True
+#endregion
+
+# region    # ------------ 字符串的运算：成员运算 ------------
+s1 = 'hello, world'
+print('wo' in s1)    # True
+s2 = 'goodbye'
+print(s2 in s1)      # False
+#endregion
+
+# region    # ------------ 字符串的运算：获取字符串长度 ------------
+s = 'hello, world'
+print(len(s))                   # 12
+print(len('goodbye, world'))    # 14
+#endregion
+
+# region    # ------------ 字符串的运算：索引 ------------
+s = 'abc123456'
+N = len(s)
+# 获取第一个字符
+print(s[0], s[-N])    # a a
+# 获取最后一个字符
+print(s[N-1], s[-1])  # 6 6
+# 获取索引为2或-7的字符
+print(s[2], s[-7])    # c c
+# 获取索引为5和-4的字符
+print(s[5], s[-4])    # 3 3
+#endregion
+
+# region    # ------------ 字符串的运算：切片 ------------
+s = 'abc123456'
+# i=2, j=5, k=1的正向切片操作
+print(s[2:5])       # c12
+# i=-7, j=-4, k=1的正向切片操作
+print(s[-7:-4])     # c12
+# i=2, j=9, k=1的正向切片操作
+print(s[2:])        # c123456
+# i=-7, j=9, k=1的正向切片操作
+print(s[-7:])       # c123456
+# i=2, j=9, k=2的正向切片操作
+print(s[2::2])      # c246
+# i=-7, j=9, k=2的正向切片操作
+print(s[-7::2])     # c246
+# i=0, j=9, k=2的正向切片操作
+print(s[::2])       # ac246
+# i=1, j=-1, k=2的正向切片操作
+print(s[1:-1:2])    # b135
+# i=7, j=1, k=-1的负向切片操作
+print(s[7:1:-1])    # 54321c
+# i=-2, j=-8, k=-1的负向切片操作
+print(s[-2:-8:-1])  # 54321c
+# i=7, j=-10, k=-1的负向切片操作
+print(s[7::-1])     # 54321cba
+# i=-1, j=1, k=-1的负向切片操作
+print(s[:1:-1])     # 654321c
+# i=0, j=9, k=1的正向切片
+print(s[:])         # abc123456
+# i=0, j=9, k=2的正向切片
+print(s[::2])       # ac246
+# i=-1, j=-10, k=-1的负向切片
+print(s[::-1])      # 654321cba
+# i=-1, j=-10, k=-2的负向切片
+print(s[::-2])      # 642ca
+#endregion
+
+# region    # ------------ 字符串的运算：循环遍历每个字符 ------------
+s1 = 'hello'
+for index in range(len(s1)):
+    print(s1[index])
+
+s1 = 'hello'
+for ch in s1:
+    print(ch)
+#endregion
+
+# region    # ------------ 字符串方法：大小写相关操作 ------------
+s1 = 'hello, world!'
+# 使用capitalize方法获得字符串首字母大写后的字符串
+print(s1.capitalize())   # Hello, world!
+# 使用title方法获得字符串每个单词首字母大写后的字符串
+print(s1.title())        # Hello, World!
+# 使用upper方法获得字符串大写后的字符串
+print(s1.upper())        # HELLO, WORLD!
+s2 = 'GOODBYE'
+# 使用lower方法获得字符串小写后的字符串
+print(s2.lower())        # goodbye
+#endregion
+
+# region    # ------------ 字符串方法：查找操作 ------------
+s = 'hello, world!'
+# find方法从字符串中查找另一个字符串所在的位置
+# 找到了返回字符串中另一个字符串首字符的索引
+print(s.find('or'))        # 8
+# 找不到返回-1
+print(s.find('shit'))      # -1
+# index方法与find方法类似
+# 找到了返回字符串中另一个字符串首字符的索引
+print(s.index('or'))       # 8
+# 找不到引发异常
+print(s.index('shit'))     # ValueError: substring not found
+#endregion
+
+# region    # ------------ 字符串方法：性质判断 ------------
+s1 = 'hello, world!'
+# startwith方法检查字符串是否以指定的字符串开头返回布尔值
+print(s1.startswith('He'))    # False
+print(s1.startswith('hel'))   # True
+# endswith方法检查字符串是否以指定的字符串结尾返回布尔值
+print(s1.endswith('!'))       # True
+
+s2 = 'abc123456'
+# isdigit方法检查字符串是否由数字构成返回布尔值
+print(s2.isdigit())    # False
+# isalpha方法检查字符串是否以字母构成返回布尔值
+print(s2.isalpha())    # False
+# isalnum方法检查字符串是否以数字和字母构成返回布尔值
+print(s2.isalnum())    # True
+#endregion
+
+# region    # ------------ 字符串方法：格式化字符串 ------------
+s = 'hello, world'
+# center方法以宽度20将字符串居中并在两侧填充*
+print(s.center(20, '*'))  # ****hello, world****
+# rjust方法以宽度20将字符串右对齐并在左侧填充空格
+print(s.rjust(20))        #         hello, world
+# ljust方法以宽度20将字符串左对齐并在右侧填充~
+print(s.ljust(20, '~'))   # hello, world~~~~~~~~
+# 在字符串的左侧补零
+print('33'.zfill(5))      # 00033
+print('-33'.zfill(5))     # -0033
+
+a = 321
+b = 123
+print('%d * %d = %d' % (a, b, a * b))
+
+a = 321
+b = 123
+print('{0} * {1} = {2}'.format(a, b, a * b))
+
+a = 321
+b = 123
+print(f'{a} * {b} = {a * b}')
+#endregion
+
+# region    # ------------ 字符串方法：修建操作 ------------
+s = '   jackfrued@126.com  \t\r\n'
+# strip方法获得字符串修剪左右两侧空格之后的字符串
+print(s)    # jackfrued@126.com
+print(s.strip())    # jackfrued@126.com
+#endregion
+
+# region    # ------------ 字符串方法：替换操作 ------------
+s = 'hello, world'
+print(s.replace('o', '@'))     # hell@, w@rld
+print(s.replace('o', '@', 1))  # hell@, world
+#endregion
+
+# region    # ------------ 字符串方法：拆分/合并操作 ------------
+s = 'I love you'
+words = s.split()
+print(words)            # ['I', 'love', 'you']
+print('#'.join(words))  # I#love#you
+
+s = 'I#love#you#so#much'
+words = s.split('#')
+print(words)  # ['I', 'love', 'you', 'so', 'much']
+words = s.split('#', 3)
+print(words)  # ['I', 'love', 'you', 'so#much']
+#endregion
+
+# region    # ------------ 字符串方法：编码/解码操作 ------------
+a = '骆昊'
+b = a.encode('utf-8')
+c = a.encode('gbk')
+print(b, c)  # b'\xe9\xaa\x86\xe6\x98\x8a' b'\xc2\xe6\xea\xbb'
+print(b.decode('utf-8'))
+print(c.decode('gbk'))
+#endregion
+
+# region    # ------------ 创建集合 ------------
+# 创建集合的字面量语法(重复元素不会出现在集合中)
+set1 = {1, 2, 3, 3, 3, 2}
+print(set1)         # {1, 2, 3}
+print(len(set1))    # 3
+# 创建集合的构造器语法(后面会讲到什么是构造器)
+set2 = set('hello')
+print(set2)         # {'h', 'l', 'o', 'e'}
+# 将列表转换成集合(可以去掉列表中的重复元素)
+set3 = set([1, 2, 3, 3, 2, 1])
+print(set3)         # {1, 2, 3}
+# 创建集合的生成式语法(将列表生成式的[]换成{})
+set4 = {num for num in range(1, 20) if num % 3 == 0 or num % 5 == 0}
+print(set4)         # {3, 5, 6, 9, 10, 12, 15, 18}
+# 集合元素的循环遍历
+for elem in set4:
+    print(elem)
+#endregion
+
+# region    # ------------ 集合的运算：成员运算 ------------
+set1 = {11, 12, 13, 14, 15}
+print(10 in set1)        # False
+print(15 in set1)        # True
+set2 = {'Python', 'Java', 'Go', 'Swift'}
+print('Ruby' in set2)    # False
+print('Java' in set2)    # True
+#endregion
+
+# region    # ------------ 集合的运算：交并差运算 ------------
+set1 = {1, 2, 3, 4, 5, 6, 7}
+set2 = {2, 4, 6, 8, 10}
+
+# 交集
+# 方法一: 使用 & 运算符
+print(set1 & set2)                # {2, 4, 6}
+# 方法二: 使用intersection方法
+print(set1.intersection(set2))    # {2, 4, 6}
+
+# 并集
+# 方法一: 使用 | 运算符
+print(set1 | set2)         # {1, 2, 3, 4, 5, 6, 7, 8, 10}
+# 方法二: 使用union方法
+print(set1.union(set2))    # {1, 2, 3, 4, 5, 6, 7, 8, 10}
+
+# 差集
+# 方法一: 使用 - 运算符
+print(set1 - set2)              # {1, 3, 5, 7}
+# 方法二: 使用difference方法
+print(set1.difference(set2))    # {1, 3, 5, 7}
+
+# 对称差
+# 方法一: 使用 ^ 运算符
+print(set1 ^ set2)                        # {1, 3, 5, 7, 8, 10}
+# 方法二: 使用symmetric_difference方法
+print(set1.symmetric_difference(set2))    # {1, 3, 5, 7, 8, 10}
+# 方法三: 对称差相当于两个集合的并集减去交集
+print((set1 | set2) - (set1 & set2))      # {1, 3, 5, 7, 8, 10}
+
+# 复合赋值运算
+set1 = {1, 3, 5, 7}
+set2 = {2, 4, 6}
+# 将set1和set2求并集再赋值给set1
+# 也可以通过set1.update(set2)来实现
+set1 |= set2
+print(set1)    # {1, 2, 3, 4, 5, 6, 7}
+set3 = {3, 6, 9}
+# 将set1和set3求交集再赋值给set1
+# 也可以通过set1.intersection_update(set3)来实现
+set1 &= set3
+print(set1)    # {3, 6}
+#endregion
+
+# region    # ------------ 集合的运算：比较运算 ------------
+set1 = {1, 3, 5}
+set2 = {1, 2, 3, 4, 5}
+set3 = set2
+# <运算符表示真子集，<=运算符表示子集
+print(set1 < set2, set1 <= set2)    # True True
+print(set2 < set3, set2 <= set3)    # False True
+# 通过issubset方法也能进行子集判断
+print(set1.issubset(set2))      # True
+
+# 反过来可以用issuperset或>运算符进行超集判断
+print(set2.issuperset(set1))    # True
+print(set2 > set1)              # True
+#endregion
+
+# region    # ------------ 集合的方法 ------------
+# 创建一个空集合
+set1 = set()
+
+# 通过add方法添加元素
+set1.add(33)
+set1.add(55)
+set1.update({1, 10, 100, 1000})
+print(set1)    # {33, 1, 100, 55, 1000, 10}
+
+# 通过discard方法删除指定元素
+set1.discard(100)
+set1.discard(99)
+print(set1)    # {1, 10, 33, 55, 1000}
+
+# 通过remove方法删除指定元素，建议先做成员运算再删除
+# 否则元素如果不在集合中就会引发KeyError异常
+if 10 in set1:
+    set1.remove(10)
+print(set1)    # {33, 1, 55, 1000}
+
+# pop方法可以从集合中随机删除一个元素并返回该元素
+print(set1.pop())
+
+# clear方法可以清空整个集合
+set1.clear()
+print(set1)    # set()
+
+# 判断两个集合有没有相同的元素：有-F；没有-T
+set1 = {'Java', 'Python', 'Go', 'Kotlin'}
+set2 = {'Kotlin', 'Swift', 'Java', 'Objective-C', 'Dart'}
+set3 = {'HTML', 'CSS', 'JavaScript'}
+print(set1.isdisjoint(set2))    # False
+print(set1.isdisjoint(set3))    # True
+#endregion
+
+# region    # ------------ 集合：不可变集合 ------------
+set1 = frozenset({1, 3, 5, 7})
+set2 = frozenset(range(1, 6))
+print(set1 & set2)    # frozenset({1, 3, 5})
+print(set1 | set2)    # frozenset({1, 2, 3, 4, 5, 7})
+print(set1 - set2)    # frozenset({7})
+print(set1 < set2)    # False
+#endregion
+
+# region    # ------------ 字典：创建和使用 ------------
+### 方式一
+xinhua = {
+    '麓': '山脚下',
+    '路': '道，往来通行的地方；方面，地区：南～货，外～货；种类：他俩是一～人',
+    '蕗': '甘草的别名',
+    '潞': '潞水，水名，即今山西省的浊漳河；潞江，水名，即云南省的怒江'
+}
+print(xinhua)
+person = {
+    'name': '王大锤', 'age': 55, 'weight': 60, 'office': '科华北路62号',
+    'home': '中同仁路8号', 'tel': '13122334455', 'econtact': '13800998877'
+}
+print(person)
+
+### 方式二：dict和zip
+# dict函数(构造器)中的每一组参数就是字典中的一组键值对
+person = dict(name='王大锤', age=55, weight=60, home='中同仁路8号')
+print(person)    # {'name': '王大锤', 'age': 55, 'weight': 60, 'home': '中同仁路8号'}
+
+# 可以通过Python内置函数zip压缩两个序列并创建字典
+items1 = dict(zip('ABCDE', '12345'))
+print(items1)    # {'A': '1', 'B': '2', 'C': '3', 'D': '4', 'E': '5'}
+items2 = dict(zip('ABCDE', range(1, 10)))
+print(items2)    # {'A': 1, 'B': 2, 'C': 3, 'D': 4, 'E': 5}
+
+### 方式二：生成式
+items3 = {x: x ** 3 for x in range(1, 6)}
+print(items3)     # {1: 1, 2: 8, 3: 27, 4: 64, 5: 125}
+
+### 获取键的值
+person = {'name': '王大锤', 'age': 55, 'weight': 60, 'office': '科华北路62号'}
+print(len(person))    # 4
+for key in person:
+    print(key)
+
+for key in person:
+    print(f'{key}: {person[key]}')
+#endregion
+
+# region    # ------------ 字典的运算 ------------
+person = {'name': '王大锤', 'age': 55, 'weight': 60, 'office': '科华北路62号'}
+# 检查name和tel两个键在不在person字典中
+print('name' in person, 'tel' in person)    # True False
+# 通过age修将person字典中对应的值修改为25
+if 'age' in person:
+    person['age'] = 25
+# 通过索引操作向person字典中存入新的键值对
+person['tel'] = '13122334455'
+person['signature'] = 'xxxx，yyyyyy'
+print('name' in person, 'tel' in person)    # True True
+# 检查person字典中键值对的数量
+print(len(person))    # 6
+# 对字典的键进行循环并通索引运算获取键对应的值
+for key in person:
+    print(f'{key}: {person[key]}')
+#endregion
+
+# region    # ------------ 字典的方法 ------------
+# 字典中的值又是一个字典(嵌套的字典)
+students = {
+    1001: {'name': '狄仁杰', 'sex': True, 'age': 22, 'place': '山西大同'},
+    1002: {'name': '白元芳', 'sex': True, 'age': 23, 'place': '河北保定'},
+    1003: {'name': '武则天', 'sex': False, 'age': 20, 'place': '四川广元'}
+}
+
+# 使用get方法通过键获取对应的值，如果取不到不会引发KeyError异常而是返回None或设定的默认值
+print(students.get(1002))    # {'name': '白元芳', 'sex': True, 'age': 23, 'place': '河北保定'}
+print(students.get(1005))    # None
+print(students.get(1005, {'name': '无名氏'}))    # {'name': '无名氏'}
+
+# 获取字典中所有的键
+print(students.keys())      # dict_keys([1001, 1002, 1003])
+# 获取字典中所有的值
+print(students.values())    # dict_values([{...}, {...}, {...}])
+# 获取字典中所有的键值对
+print(students.items())     # dict_items([(1001, {...}), (1002, {....}), (1003, {...})])
+# 对字典中所有的键值对进行循环遍历
+for key, value in students.items():
+    print(key, '--->', value)
+
+# 使用pop方法通过键删除对应的键值对并返回该值
+stu1 = students.pop(1002)
+print(stu1)             # {'name': '白元芳', 'sex': True, 'age': 23, 'place': '河北保定'}
+print(len(students))    # 2
+# stu2 = students.pop(1005)    # KeyError: 1005
+stu2 = students.pop(1005)
+print(stu2)             # error
+stu2 = students.pop(1005, {})
+print(stu2)             # {}
+
+# 使用popitem方法删除字典中最后一组键值对并返回对应的二元组
+# 如果字典中没有元素，调用该方法将引发KeyError异常
+key, value = students.popitem()
+print(key, value)    # 1003 {'name': '武则天', 'sex': False, 'age': 20, 'place': '四川广元'}
+
+# 如果这个键在字典中存在，setdefault返回原来与这个键对应的值
+# 如果这个键在字典中不存在，向字典中添加键值对，返回第二个参数的值，默认为None
+result = students.setdefault(1005, {'name': '方启鹤', 'sex': True})
+print(result)        # {'name': '方启鹤', 'sex': True}
+print(students)      # {1001: {...}, 1005: {...}}
+
+# 使用update更新字典元素，相同的键会用新值覆盖掉旧值，不同的键会添加到字典中
+others = {
+    1005: {'name': '乔峰', 'sex': True, 'age': 32, 'place': '北京大兴'},
+    1010: {'name': '王语嫣', 'sex': False, 'age': 19},
+    1008: {'name': '钟灵', 'sex': False}
+}
+students.update(others)
+print(students)      # {1001: {...}, 1005: {...}, 1010: {...}, 1008: {...}}
+
+### 删除
+person = {'name': '王大锤', 'age': 25, 'sex': True}
+del person['age']
+print(person)    # {'name': '王大锤', 'sex': True}
+#endregion
+
+# region    # ------------ 字典的应用：统计每个英文字母出现的次数 ------------
+# sentence = input('请输入一段话: ')
+sentence = 'aadddvv'
+counter = {}
+for ch in sentence:
+    if 'A' <= ch <= 'Z' or 'a' <= ch <= 'z':
+        counter[ch] = counter.get(ch, 0) + 1
+for key, value in counter.items():
+    print(f'字母{key}出现了{value}次.')
+#endregion
+
+# region    # ------------ 字典的应用：找出股价大于100元的股票并创建一个新的字典 ------------
+stocks = {
+    'AAPL': 191.88,
+    'GOOG': 1186.96,
+    'IBM': 149.24,
+    'ORCL': 48.44,
+    'ACN': 166.89,
+    'FB': 208.09,
+    'SYMC': 21.29
+}
+stocks2 = {key: value for key, value in stocks.items() if value > 100}
+print(stocks2)
+#endregion
+
+# region    案例：输入M和N计算C(M,N)
+def fac(num):
+    """求阶乘"""
+    result = 1
+    for n in range(1, num + 1):
+        result *= n
+    # 返回num的阶乘（因变量）
+    return result
+
+# m = int(input('m = '))
+# n = int(input('n = '))
+m = int(7)
+n = int(3)
+# 当需要计算阶乘的时候不用再写重复的代码而是直接调用函数fac
+# 调用函数的语法是在函数名后面跟上圆括号并传入参数
+print(fac(m) // fac(n) // fac(m - n))
+#endregion
+
+# region    # ------------ 函数：可变参数 ------------
+# 用星号表达式来表示args可以接收0个或任意多个参数
+def add(*args):
+    total = 0
+    # 可变参数可以放在for循环中取出每个参数的值
+    for val in args:
+        if type(val) in (int, float):
+            total += val
+    return total
+
+# 在调用add函数时可以传入0个或任意多个参数
+print(add())
+print(add(1))
+print(add(1, 2))
+print(add(1, 2, 3))
+print(add(1, 3, 5, 7, 9))
+#endregion
+
+# region    # ------------ 函数：用模块管理函数 ------------
+def foo():
+    print('hello, world!')
+
+def foo():
+    print('goodbye, world!')
+
+foo()  # 大家猜猜调用foo函数会输出什么
+#endregion
 
 
 
