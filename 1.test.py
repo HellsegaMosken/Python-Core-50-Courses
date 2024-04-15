@@ -1056,6 +1056,174 @@ def foo():
 foo()  # 大家猜猜调用foo函数会输出什么
 #endregion
 
+# region    生成验证码
+import random
+import string
+
+ALL_CHARS = string.digits + string.ascii_letters
+
+
+def generate_code(code_len=4):
+    """生成指定长度的验证码
+
+    :param code_len: 验证码的长度(默认4个字符)
+    :return: 由大小写英文字母和数字构成的随机验证码字符串
+    """
+    return ''.join(random.choices(ALL_CHARS, k=code_len))
+
+for _ in range(10):
+    print(generate_code())
+#endregion
+
+# region    返回给定文件的后缀名
+### 方法一
+def get_suffix(filename, ignore_dot=True):
+    """获取文件名的后缀名
+
+    :param filename: 文件名
+    :param ignore_dot: 是否忽略后缀名前面的点
+    :return: 文件的后缀名
+    """
+    # 从字符串中逆向查找.出现的位置
+    pos = filename.rfind('.')
+    # 通过切片操作从文件名中取出后缀名
+    if pos <= 0:
+        return ''
+    return filename[pos + 1:] if ignore_dot else filename[pos:]
+
+print(get_suffix('readme.txt'))       # txt
+print(get_suffix('readme.txt.md'))    # md
+print(get_suffix('.readme'))          #
+print(get_suffix('readme.'))          #
+print(get_suffix('readme'))           #
+
+### 方法二
+from os.path import splitext
+def get_suffix(filename, ignore_dot=True):
+    return splitext(filename)[1][1:]
+    # return splitext(filename)[1]
+
+print(get_suffix('readme.txt'))       # txt
+print(get_suffix('readme.txt.md'))    # md
+print(get_suffix('.readme'))          #
+print(get_suffix('readme.'))          #
+print(get_suffix('readme'))           #
+#endregion
+
+# region    判断给定的正整数是不是质数
+def is_prime(num: int) -> bool:
+    """判断一个正整数是不是质数
+
+    :param num: 正整数
+    :return: 如果是质数返回True，否则返回False
+    """
+    for i in range(2, int(num ** 0.5) + 1):
+        if num % i == 0:
+            return False
+    return num != 1
+#endregion
+
+# region    计算两个正整数最大公约数和最小公倍数
+### 方法一
+def gcd_and_lcm(x: int, y: int) -> int:
+    """求最大公约数和最小公倍数"""
+    a, b = x, y
+    while b % a != 0:
+        a, b = b % a, a
+    return a, x * y // a
+
+### 方法二
+def gcd(x: int, y: int) -> int:
+    """求最大公约数"""
+    while y % x != 0:
+        x, y = y % x, x
+    return x
+
+
+def lcm(x: int, y: int) -> int:
+    """求最小公倍数"""
+    return x * y // gcd(x, y)
+#endregion
+
+# region    计算一组样本数据描述性统计信息
+import math
+
+
+def ptp(data):
+    """求极差（全距）"""
+    return max(data) - min(data)
+
+
+def average(data):
+    """求均值"""
+    return sum(data) / len(data)
+
+
+def variance(data):
+    """求方差"""
+    x_bar = average(data)
+    temp = [(num - x_bar) ** 2 for num in data]
+    return sum(temp) / (len(temp) - 1)
+
+
+def standard_deviation(data):
+    """求标准差"""
+    return math.sqrt(variance(data))
+
+def median(data):
+    """找中位数"""
+    temp, size = sorted(data), len(data)
+    if size % 2 != 0:
+        return temp[size // 2]
+    else:
+        return average(temp[size // 2 - 1:size // 2 + 1])
+#endregion
+
+# region    # ------------ 函数：关键字参数 ------------
+def is_triangle(a, b, c):
+    print(f'a = {a}, b = {b}, c = {c}')
+    return a + b > c and b + c > a and a + c > b
+
+# 调用函数传入参数不指定参数名按位置对号入座
+print(is_triangle(1, 2, 3))
+# 调用函数通过“参数名=参数值”的形式按顺序传入参数
+print(is_triangle(a=1, b=2, c=3))
+# 调用函数通过“参数名=参数值”的形式不按顺序传入参数
+print(is_triangle(c=3, a=1, b=2))
+
+def is_triangle(*, a, b, c):
+    print(f'a = {a}, b = {b}, c = {c}')
+    return a + b > c and b + c > a and a + c > b
+
+# TypeError: is_triangle() takes 0 positional arguments but 3 were given
+# print(is_triangle(3, 4, 5))
+# 传参时必须使用“参数名=参数值”的方式，位置不重要
+print(is_triangle(a=3, b=4, c=5))
+print(is_triangle(c=5, b=4, a=3))
+
+def calc(*args, **kwargs):
+    result = 0
+    for arg in args:
+        if type(arg) in (int, float):
+            result += arg
+    for value in kwargs.values():
+        if type(value) in (int, float):
+            result += value
+    return result
+
+print(calc())                  # 0
+print(calc(1, 2, 3))           # 6
+print(calc(a=1, b=2, c=3))     # 6
+print(calc(1, 2, c=3, d=4))    # 10
+#endregion
+
+
+
+
+
+
+
+
 
 
 
