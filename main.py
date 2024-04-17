@@ -101,3 +101,24 @@ for item in items:
     print(item)
 #endregion
 
+# region    # ------------ 函数：装饰器+语法糖+取消机制 ------------
+from functools import wraps
+
+def record_time(func):
+
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        start = time.time()
+        result = func(*args, **kwargs)
+        end = time.time()
+        print(f'{func.__name__}执行时间: {end - start:.3f}秒')
+        return result
+
+    return wrapper
+#endregion
+
+
+
+
+
+

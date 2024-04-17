@@ -1261,11 +1261,97 @@ download('MySQL从删库到跑路.avi')
 upload('Python从入门到住院.pdf')
 #endregion
 
+# region    # ------------ 函数：语法糖 ------------
+import random
+import time
+
+def record_time(func):
+
+    def wrapper(*args, **kwargs):
+        start = time.time()
+        result = func(*args, **kwargs)
+        end = time.time()
+        print(f'{func.__name__}执行时间: {end - start:.3f}秒')
+        return result
+
+    return wrapper
 
 
+@record_time
+def download(filename):
+    print(f'开始下载{filename}.')
+    time.sleep(random.randint(2, 6))
+    print(f'{filename}下载完成.')
 
 
+@record_time
+def upload(filename):
+    print(f'开始上传{filename}.')
+    time.sleep(random.randint(4, 8))
+    print(f'{filename}上传完成.')
 
+
+download('MySQL从删库到跑路.avi')
+upload('Python从入门到住院.pdf')
+
+#endregion
+
+# region    # ------------ 函数：取消装饰器 ------------
+import random
+import time
+
+from functools import wraps
+
+def record_time(func):
+
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        start = time.time()
+        result = func(*args, **kwargs)
+        end = time.time()
+        print(f'{func.__name__}执行时间: {end - start:.3f}秒')
+        return result
+
+    return wrapper
+
+@record_time
+def download(filename):
+    print(f'开始下载{filename}.')
+    time.sleep(random.randint(2, 6))
+    print(f'{filename}下载完成.')
+
+@record_time
+def upload(filename):
+    print(f'开始上传{filename}.')
+    time.sleep(random.randint(4, 8))
+    print(f'{filename}上传完成.')
+
+download('MySQL从删库到跑路.avi')
+upload('Python从入门到住院.pdf')
+# 取消装饰器
+download.__wrapped__('MySQL必知必会.pdf')
+upload = upload.__wrapped__
+upload('Python从新手到大师.pdf')
+#endregion
+
+# region    # ------------ 函数：递归调用 ------------
+### 阶乘
+def fac(num):
+    if num in (0, 1):
+        return 1
+    return num * fac(num - 1)
+
+### 计算斐波那契数
+def fib(n):
+    if n in (1, 2):
+        return 1
+    return fib(n - 1) + fib(n - 2)
+
+
+# 打印前20个斐波那契数
+for i in range(1, 21):
+    print(fib(i))
+#endregion
 
 
 
