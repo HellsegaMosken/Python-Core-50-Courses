@@ -1363,7 +1363,8 @@ for i in range(1, 21):
     print(fib(i))
 #endregion
 
-# region    # ------------ 定义类 ------------
+# region    # ------------ 类 ------------
+### 定义类
 class Student:
 
     def study(self, course_name):
@@ -1373,11 +1374,13 @@ class Student:
         print(f'学生正在玩游戏.')
 
 ### 创建和使用对象
+# 构造器：Student()
 stu1 = Student()
 stu2 = Student()
 print(stu1)    # <__main__.Student object at 0x10ad5ac50>
 print(stu2)    # <__main__.Student object at 0x10ad5acd0>
 print(hex(id(stu1)), hex(id(stu2)))    # 0x10ad5ac50 0x10ad5acd0
+# 所以stu3 = stu2这样的赋值语句并没有创建新的对象，只是用一个新的变量保存了已有对象的地址。
 
 # 通过“类.方法”调用方法，第一个参数是接收消息的对象，第二个参数是学习的课程名称
 Student.study(stu1, 'Python程序设计')    # 学生正在学习Python程序设计.
@@ -1409,6 +1412,8 @@ class Student:
 # 所以调用Student类的构造器创建对象时要传入这两个参数
 stu1 = Student('骆昊', 40)
 stu2 = Student('王大锤', 15)
+stu2.name
+stu2.age
 stu1.study('Python程序设计')    # 骆昊正在学习Python程序设计.
 stu2.play()                    # 王大锤正在玩游戏.
 #endregion
@@ -1486,14 +1491,15 @@ while True:
 
 # region    案例：定义一个类描述平面上的点，要求提供计算到另一个点距离的方法。
 class Point(object):
-    """屏面上的点"""
-
     def __init__(self, x=0, y=0):
         """初始化方法
         :param x: 横坐标
         :param y: 纵坐标
         """
         self.x, self.y = x, y
+
+    def __str__(self):
+        return f'({self.x}, {self.y})'
 
     def distance_to(self, other):
         """计算与另一个点的距离
@@ -1503,14 +1509,490 @@ class Point(object):
         dy = self.y - other.y
         return (dx * dx + dy * dy) ** 0.5
 
-    def __str__(self):
-        return f'({self.x}, {self.y})'
 
 p1 = Point(3, 5)
 p2 = Point(6, 9)
 print(p1, p2)
 print(p1.distance_to(p2))
+print(p2.distance_to(p1))
 #endregion
+
+# region    # ------------ 可见性和属性装饰器 ------------
+# __name表示一个私有属性，_name表示一个受保护属性
+class Student:
+
+    def __init__(self, name, age):
+        self.__name = name
+        self._age = age
+
+    def study(self, course_name):
+        print(f'{self.__name}正在学习{course_name}.')
+
+stu = Student('王大锤', 20)
+stu.study('Python程序设计')
+print(stu.name)    # Error
+print(stu.age)     # Error
+print(stu.__name)  # Error
+print(stu._age)    # Error
+
+print(stu._Student__name)    # Right
+print(stu._Student_age)      # Error
+
+# 可以通过property装饰器为“私有”属性提供读取和修改的方法
+class Student:
+
+    def __init__(self, name, age):
+        self.__name = name
+        self.__age = age
+
+    # 属性访问器(getter方法) - 获取__name属性
+    @property
+    def name(self):
+        return self.__name
+
+    # 属性修改器(setter方法) - 修改__name属性
+    @name.setter
+    def name(self, name):
+        # 如果name参数不为空就赋值给对象的__name属性
+        # 否则将__name属性赋值为'无名氏'，有两种写法
+        # self.__name = name if name else '无名氏'
+        self.__name = name or '无名氏'
+
+    @property
+    def age(self):
+        return self.__age
+
+
+stu = Student('王大锤', 20)
+print(stu.name)  # 王大锤
+print(stu.age)   #  20
+stu.name = ''
+print(stu.name)  # 无名氏
+# stu.age = 30     # AttributeError: can't set attribute
+#endregion
+
+# region    # ------------ 动态属性 ------------
+class Student:
+
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+
+
+stu = Student('王大锤', 20)
+# 为Student对象动态添加sex属性
+stu.sex = '男'
+print(stu.name)
+print(stu.sex)
+
+# 锁定属性
+class Student:
+    __slots__ = ('name', 'age')
+
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+
+
+stu = Student('王大锤', 20)
+# AttributeError: 'Student' object has no attribute 'sex'
+stu.sex = '男'
+#endregion
+
+# region    # ------------ 静态方法和类方法 ------------
+class Triangle(object):
+    """三角形类"""
+
+    def __init__(self, a, b, c):
+        """初始化方法"""
+        self.a = a
+        self.b = b
+        self.c = c
+
+    @staticmethod
+    def is_valid(a, b, c):
+        """判断三条边长能否构成三角形(静态方法)"""
+        return a + b > c and b + c > a and a + c > b
+
+    # @classmethod
+    # def is_valid(cls, a, b, c):
+    #     """判断三条边长能否构成三角形(类方法)"""
+    #     return a + b > c and b + c > a and a + c > b
+
+    def perimeter(self):
+        """计算周长"""
+        return self.a + self.b + self.c
+
+    def area(self):
+        """计算面积"""
+        p = self.perimeter() / 2
+        return (p * (p - self.a) * (p - self.b) * (p - self.c)) ** 0.5
+#endregion
+
+# region    # ------------ 继承和多态 ------------
+class Person:
+    """人类"""
+
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+
+    def eat(self):
+        print(f'{self.name}正在吃饭.')
+
+    def sleep(self):
+        print(f'{self.name}正在睡觉.')
+
+
+class Student(Person):
+    """学生类"""
+
+    def __init__(self, name, age):
+        # super(Student, self).__init__(name, age)
+        super().__init__(name, age)
+
+    def study(self, course_name):
+        print(f'{self.name}正在学习{course_name}.')
+
+
+class Teacher(Person):
+    """老师类"""
+
+    def __init__(self, name, age, title):
+        # super(Teacher, self).__init__(name, age)
+        super().__init__(name, age)
+        self.title = title
+
+    def teach(self, course_name):
+        print(f'{self.name}{self.title}正在讲授{course_name}.')
+
+
+stu1 = Student('白元芳', 21)
+stu2 = Student('狄仁杰', 22)
+teacher = Teacher('武则天', 35, '副教授')
+stu1.eat()
+stu2.sleep()
+teacher.teach('Python程序设计')
+stu1.study('Python程序设计')
+#endregion
+
+# region    # ------------ 继承和多态 ------------
+class Person:
+    """人类"""
+
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+
+    def eat(self):
+        print(f'{self.name}正在吃饭.')
+
+    def sleep(self):
+        print(f'{self.name}正在睡觉.')
+
+
+class Student(Person):
+    """学生类"""
+
+    def __init__(self, name, age):
+        # super(Student, self).__init__(name, age)
+        super().__init__(name, age)
+
+    def study(self, course_name):
+        print(f'{self.name}正在学习{course_name}.')
+
+class Teacher(Person):
+    """老师类"""
+
+    def __init__(self, name, age, title):
+        # super(Teacher, self).__init__(name, age)
+        super().__init__(name, age)
+        self.title = title
+
+    def teach(self, course_name):
+        print(f'{self.name}{self.title}正在讲授{course_name}.')
+
+stu1 = Student('白元芳', 21)
+stu2 = Student('狄仁杰', 22)
+teacher = Teacher('武则天', 35, '副教授')
+stu1.eat()
+stu2.sleep()
+teacher.teach('Python程序设计')
+stu1.study('Python程序设计')
+#endregion
+
+# region    案例：扑克游戏
+# ------------ 创建花色 ------------
+from enum import Enum  # 创建枚举类型
+
+class Suite(Enum):
+    """花色(枚举)"""
+    SPADE, HEART, CLUB, DIAMOND = range(4)
+
+for suite in Suite:
+    print(f'{suite}: {suite.value}')
+
+# ------------ 定义牌类 ------------
+class Card:
+    """牌"""
+
+    def __init__(self, suite, face):
+        self.suite = suite
+        self.face = face
+
+    def __repr__(self):
+        suites = '♠♥♣♦'
+        faces = ['', 'A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']
+        # 根据牌的花色和点数取到对应的字符
+        return f'{suites[self.suite.value]}{faces[self.face]}'
+
+    def __lt__(self, other):
+        # 花色相同比较点数的大小
+        if self.suite == other.suite:
+            return self.face < other.face
+        # 花色不同比较花色对应的值
+        return self.suite.value < other.suite.value
+
+card1 = Card(Suite.SPADE, 5)
+card2 = Card(Suite.HEART, 13)
+print(card1, card2)    # ♠5 ♥K
+
+# ------------ 定义牌类 ------------
+import random
+
+class Poker:
+    """扑克"""
+
+    def __init__(self):
+        # 通过列表的生成式语法创建一个装52张牌的列表
+        self.cards = [Card(suite, face) for suite in Suite
+                      for face in range(1, 14)]
+        # current属性表示发牌的位置
+        self.current = 0
+
+    def shuffle(self):
+        """洗牌"""
+        self.current = 0
+        # 通过random模块的shuffle函数实现列表的随机乱序
+        random.shuffle(self.cards)
+
+    def deal(self):
+        """发牌"""
+        card = self.cards[self.current]
+        self.current += 1
+        return card
+
+    @property
+    def has_next(self):
+        """还有没有牌可以发"""
+        return self.current < len(self.cards)
+
+poker = Poker()
+poker.shuffle()
+print(poker.cards)
+
+# ------------ 定义玩家类 ------------
+class Player:
+    """玩家"""
+
+    def __init__(self, name):
+        self.name = name
+        self.cards = []
+
+    def get_one(self, card):
+        """摸牌"""
+        self.cards.append(card)
+
+    def arrange(self):
+        self.cards.sort()
+
+# ------------ 创建四个玩家并将牌发到玩家的手上 ------------
+poker = Poker()
+poker.shuffle()
+players = [Player('东邪'), Player('西毒'), Player('南帝'), Player('北丐')]
+
+for _ in range(13):
+    for player in players:
+        player.get_one(poker.deal())
+
+for player in players:
+    player.arrange()
+    print(f'{player.name}: ', end='')
+    print(player.cards)
+
+#endregion
+
+# region    案例：工资结算系统
+from abc import ABCMeta, abstractmethod  # 用ABCMeta元类来定义抽象类
+
+class Employee(metaclass=ABCMeta):
+    """员工"""
+
+    def __init__(self, name):
+        self.name = name
+
+    @abstractmethod
+    def get_salary(self):
+        """结算月薪"""
+        pass
+
+class Manager(Employee):
+    """部门经理"""
+
+    def get_salary(self):
+        return 15000.0
+
+class Programmer(Employee):
+    """程序员"""
+
+    def __init__(self, name, working_hour=0):
+        super().__init__(name)
+        self.working_hour = working_hour
+
+    def get_salary(self):
+        return 200 * self.working_hour
+
+class Salesman(Employee):
+    """销售员"""
+
+    def __init__(self, name, sales=0):
+        super().__init__(name)
+        self.sales = sales
+
+    def get_salary(self):
+        return 1800 + self.sales * 0.05
+
+emps = [
+    Manager('刘备'), Programmer('诸葛亮'), Manager('曹操'),
+    Programmer('荀彧'), Salesman('吕布'), Programmer('张辽'),
+]
+for emp in emps:
+    if isinstance(emp, Programmer):
+        emp.working_hour = int(input(f'请输入{emp.name}本月工作时间: '))
+    elif isinstance(emp, Salesman):
+        emp.sales = float(input(f'请输入{emp.name}本月销售额: '))
+    print(f'{emp.name}本月工资为: ￥{emp.get_salary():.2f}元')
+
+#endregion
+
+# region    # ------------ base64 - Base64编解码模块 ------------
+import base64
+
+content = 'Man is distinguished, not only by his reason, but by this singular passion from other animals, which is a lust of the mind, that by a perseverance of delight in the continued and indefatigable generation of knowledge, exceeds the short vehemence of any carnal pleasure.'
+base64.b64encode(content.encode())
+# b'TWFuIGlzIGRpc3Rpbmd1aXNoZWQsIG5vdCBvbmx5IGJ5IGhpcyByZWFzb24sIGJ1dCBieSB0aGlzIHNpbmd1bGFyIHBhc3Npb24gZnJvbSBvdGhlciBhbmltYWxzLCB3aGljaCBpcyBhIGx1c3Qgb2YgdGhlIG1pbmQsIHRoYXQgYnkgYSBwZXJzZXZlcmFuY2Ugb2YgZGVsaWdodCBpbiB0aGUgY29udGludWVkIGFuZCBpbmRlZmF0aWdhYmxlIGdlbmVyYXRpb24gb2Yga25vd2xlZGdlLCBleGNlZWRzIHRoZSBzaG9ydCB2ZWhlbWVuY2Ugb2YgYW55IGNhcm5hbCBwbGVhc3VyZS4='
+content = b'TWFuIGlzIGRpc3Rpbmd1aXNoZWQsIG5vdCBvbmx5IGJ5IGhpcyByZWFzb24sIGJ1dCBieSB0aGlzIHNpbmd1bGFyIHBhc3Npb24gZnJvbSBvdGhlciBhbmltYWxzLCB3aGljaCBpcyBhIGx1c3Qgb2YgdGhlIG1pbmQsIHRoYXQgYnkgYSBwZXJzZXZlcmFuY2Ugb2YgZGVsaWdodCBpbiB0aGUgY29udGludWVkIGFuZCBpbmRlZmF0aWdhYmxlIGdlbmVyYXRpb24gb2Yga25vd2xlZGdlLCBleGNlZWRzIHRoZSBzaG9ydCB2ZWhlbWVuY2Ugb2YgYW55IGNhcm5hbCBwbGVhc3VyZS4='
+base64.b64decode(content).decode()
+# 'Man is distinguished, not only by his reason, but by this singular passion from other animals, which is a lust of the mind, that by a perseverance of delight in the continued and indefatigable generation of knowledge, exceeds the short vehemence of any carnal pleasure.'
+#endregion
+
+# region    # ------------ collections - 容器数据类型模块 ------------
+### 使用namedtuple创建扑克牌类
+from collections import namedtuple
+
+Card = namedtuple('Card', ('suite', 'face'))
+card1 = Card('红桃', 5)
+card2 = Card('草花', 9)
+
+print(f'{card1.suite}{card1.face}')
+print(f'{card2.suite}{card2.face}')
+
+### 使用Counter类统计列表中出现次数最多的三个元素
+from collections import Counter
+
+words = [
+    'look', 'into', 'my', 'eyes', 'look', 'into', 'my', 'eyes',
+    'the', 'eyes', 'the', 'eyes', 'the', 'eyes', 'not', 'around',
+    'the', 'eyes', "don't", 'look', 'around', 'the', 'eyes',
+    'look', 'into', 'my', 'eyes', "you're", 'under'
+]
+counter = Counter(words)
+# 打印words列表中出现频率最高的3个元素及其出现次数
+for elem, count in counter.most_common(3):
+    print(elem, count)
+#endregion
+
+# region    案例：hashlib - 哈希函数模块
+import hashlib
+
+# 计算字符串"123456"的MD5摘要
+print(hashlib.md5('123456'.encode()).hexdigest())
+
+# 计算文件"Python-3.7.1.tar.xz"的MD5摘要
+hasher = hashlib.md5()
+with open('Python-3.7.1.tar.xz', 'rb') as file:
+    data = file.read(512)
+    while data:
+        hasher.update(data)
+        data = file.read(512)
+print(hasher.hexdigest())
+#endregion
+
+# region    案例：heapq - 堆排序模块
+import heapq
+
+list1 = [34, 25, 12, 99, 87, 63, 58, 78, 88, 92]
+# 找出列表中最大的三个元素
+print(heapq.nlargest(3, list1))
+# 找出列表中最小的三个元素
+print(heapq.nsmallest(3, list1))
+
+list2 = [
+    {'name': 'IBM', 'shares': 100, 'price': 91.1},
+    {'name': 'AAPL', 'shares': 50, 'price': 543.22},
+    {'name': 'FB', 'shares': 200, 'price': 21.09},
+    {'name': 'HPQ', 'shares': 35, 'price': 31.75},
+    {'name': 'YHOO', 'shares': 45, 'price': 16.35},
+    {'name': 'ACME', 'shares': 75, 'price': 115.65}
+]
+# 找出价格最高的三只股票
+print(heapq.nlargest(3, list2, key=lambda x: x['price']))
+# 找出持有数量最高的三只股票
+print(heapq.nlargest(3, list2, key=lambda x: x['shares']))
+#endregion
+
+# region    案例：itertools - 迭代工具模块
+import itertools
+
+# 产生ABCD的全排列
+for value in itertools.permutations('ABCD'):
+    print(value)
+
+# 产生ABCDE的五选三组合
+for value in itertools.combinations('ABCDE', 3):
+    print(value)
+
+# 产生ABCD和123的笛卡尔积
+for value in itertools.product('ABCD', '123'):
+    print(value)
+
+# 产生ABC的无限循环序列
+it = itertools.cycle(('A', 'B', 'C'))
+print(next(it))
+print(next(it))
+print(next(it))
+print(next(it))
+#endregion
+
+# region    案例：uuid - UUID生成模块
+import uuid
+
+uuid.uuid1().hex
+uuid.uuid1().hex
+uuid.uuid1().hex
+#endregion
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
