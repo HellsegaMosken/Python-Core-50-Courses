@@ -2086,6 +2086,558 @@ except IOError:
 print('程序执行结束.')
 #endregion
 
+# region    # ------------ 生成word文档 ------------
+from docx import Document
+from docx.shared import Cm, Pt
+
+from docx.document import Document as Doc
+
+# 创建代表Word文档的Doc对象
+document = Document()  # type: Doc
+# 添加大标题
+document.add_heading('快快乐乐学Python', 0)
+# 添加段落
+p = document.add_paragraph('Python是一门非常流行的编程语言，它')
+run = p.add_run('简单')
+run.bold = True
+run.font.size = Pt(18)
+p.add_run('而且')
+run = p.add_run('优雅')
+run.font.size = Pt(18)
+run.underline = True
+p.add_run('。')
+
+# 添加一级标题
+document.add_heading('Heading, level 1', level=1)
+# 添加带样式的段落
+document.add_paragraph('Intense quote', style='Intense Quote')
+# 添加无序列表
+document.add_paragraph(
+    'first item in unordered list', style='List Bullet'
+)
+document.add_paragraph(
+    'second item in ordered list', style='List Bullet'
+)
+# 添加有序列表
+document.add_paragraph(
+    'first item in ordered list', style='List Number'
+)
+document.add_paragraph(
+    'second item in ordered list', style='List Number'
+)
+
+# 添加图片（注意路径和图片必须要存在）
+document.add_picture('知乎专栏\\专栏资源\\第026课\\guido.jpg', width=Cm(5.2))
+
+# 添加分节符
+document.add_section()
+
+records = (
+    ('骆昊', '男', '1995-5-5'),
+    ('孙美丽', '女', '1992-2-2')
+)
+# 添加表格
+table = document.add_table(rows=1, cols=3)
+table.style = 'Dark List'
+hdr_cells = table.rows[0].cells
+hdr_cells[0].text = '姓名'
+hdr_cells[1].text = '性别'
+hdr_cells[2].text = '出生日期'
+# 为表格添加行
+for name, sex, birthday in records:
+    row_cells = table.add_row().cells
+    row_cells[0].text = name
+    row_cells[1].text = sex
+    row_cells[2].text = birthday
+
+# 添加分页符
+document.add_page_break()
+
+# 保存文档
+document.save('demo.docx')
+#endregion
+
+# region    # ------------ 读取Word ------------
+from docx import Document
+from docx.document import Document as Doc
+
+doc = Document('知乎专栏\\专栏资源\\第026课\\离职证明.docx')  # type: Doc
+for no, p in enumerate(doc.paragraphs):
+    print(no, p.text)
+#endregion
+
+# region    # ------------ 基于模板批量生成word ------------
+from docx import Document
+from docx.document import Document as Doc
+
+# 将真实信息用字典的方式保存在列表中
+employees = [
+    {
+        'name': '骆昊',
+        'id': '100200198011280001',
+        'sdate': '2008年3月1日',
+        'edate': '2012年2月29日',
+        'department': '产品研发',
+        'position': '架构师',
+        'company': '成都华为技术有限公司'
+    },
+    {
+        'name': '王大锤',
+        'id': '510210199012125566',
+        'sdate': '2019年1月1日',
+        'edate': '2021年4月30日',
+        'department': '产品研发',
+        'position': 'Python开发工程师',
+        'company': '成都谷道科技有限公司'
+    },
+    {
+        'name': '李元芳',
+        'id': '2102101995103221599',
+        'sdate': '2020年5月10日',
+        'edate': '2021年3月5日',
+        'department': '产品研发',
+        'position': 'Java开发工程师',
+        'company': '同城企业管理集团有限公司'
+    },
+]
+# 对列表进行循环遍历，批量生成Word文档
+for emp_dict in employees:
+    # 读取离职证明模板文件
+    doc = Document('知乎专栏\\专栏资源\\第026课\\离职证明模板.docx')  # type: Doc
+    # 循环遍历所有段落寻找占位符
+    for p in doc.paragraphs:
+        if '{' not in p.text:
+            continue
+        # 不能直接修改段落内容，否则会丢失样式
+        # 所以需要对段落中的元素进行遍历并进行查找替换
+        for run in p.runs:
+            if '{' not in run.text:
+                continue
+            # 将占位符换成实际内容
+            start, end = run.text.find('{'), run.text.find('}')
+            key, place_holder = run.text[start + 1:end], run.text[start:end + 1]
+            run.text = run.text.replace(place_holder, emp_dict[key])
+    # 每个人对应保存一个Word文档
+    doc.save(f'{emp_dict["name"]}离职证明.docx')
+#endregion
+
+# region    # ------------ 生成PowerPoint ------------
+from pptx import Presentation
+
+# 创建幻灯片对象
+pres = Presentation()
+
+# 选择母版添加一页
+title_slide_layout = pres.slide_layouts[0]
+slide = pres.slides.add_slide(title_slide_layout)
+# 获取标题栏和副标题栏
+title = slide.shapes.title
+subtitle = slide.placeholders[1]
+# 编辑标题和副标题
+title.text = "Welcome to Python"
+subtitle.text = "Life is short, I use Python"
+
+# 选择母版添加一页
+bullet_slide_layout = pres.slide_layouts[1]
+slide = pres.slides.add_slide(bullet_slide_layout)
+# 获取页面上所有形状
+shapes = slide.shapes
+# 获取标题和主体
+title_shape = shapes.title
+body_shape = shapes.placeholders[1]
+# 编辑标题
+title_shape.text = 'Introduction'
+# 编辑主体内容
+tf = body_shape.text_frame
+tf.text = 'History of Python'
+# 添加一个一级段落
+p = tf.add_paragraph()
+p.text = 'X\'max 1989'
+p.level = 1
+# 添加一个二级段落
+p = tf.add_paragraph()
+p.text = 'Guido began to write interpreter for Python.'
+p.level = 2
+
+# 保存幻灯片
+pres.save('test.pptx')
+#endregion
+
+# region    # ------------ 从PDF中提取文本 ------------
+import PyPDF2
+
+reader = PyPDF2.PdfReader('test.pdf')
+for page in reader.pages:
+    print(page.extract_text())
+#endregion
+
+# region    # ------------ 旋转和叠加页面 ------------
+reader = PyPDF2.PdfReader('XGBoost.pdf')
+writer = PyPDF2.PdfWriter()
+
+for no, page in enumerate(reader.pages):
+    if no % 2 == 0:
+        new_page = page.rotate(-90)
+    else:
+        new_page = page.rotate(90)
+    writer.add_page(new_page)
+
+with open('temp.pdf', 'wb') as file_obj:
+    writer.write(file_obj)
+#endregion
+
+# region    # ------------ 加密PDF文件 ------------
+import PyPDF2
+
+reader = PyPDF2.PdfReader('XGBoost.pdf')
+writer = PyPDF2.PdfWriter()
+
+for page in reader.pages:
+    writer.add_page(page)
+
+writer.encrypt('foobared')
+
+with open('temp.pdf', 'wb') as file_obj:
+    writer.write(file_obj)
+#endregion
+
+# region    # ------------ 批量添加水印 ------------
+import PyPDF2
+
+reader = PyPDF2.PdfReader('XGBoost.pdf')
+writer = PyPDF2.PdfWriter()
+
+for page in reader.pages:
+    writer.add_page(page)
+
+writer.encrypt('foobared')
+
+with open('temp.pdf', 'wb') as file_obj:
+    writer.write(file_obj)
+#endregion
+
+# region    # ------------ 创建PDF文件 ------------
+from reportlab.lib.pagesizes import A4
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.pdfgen import canvas
+
+pdf_canvas = canvas.Canvas('resources/demo.pdf', pagesize=A4)
+width, height = A4
+
+# 绘图
+image = canvas.ImageReader('resources/guido.jpg')
+pdf_canvas.drawImage(image, 20, height - 395, 250, 375)
+
+# 显示当前页
+pdf_canvas.showPage()
+
+# 注册字体文件
+pdfmetrics.registerFont(TTFont('Font1', 'resources/fonts/Vera.ttf'))
+pdfmetrics.registerFont(TTFont('Font2', 'resources/fonts/青呱石头体.ttf'))
+
+# 写字
+pdf_canvas.setFont('Font2', 40)
+pdf_canvas.setFillColorRGB(0.9, 0.5, 0.3, 1)
+pdf_canvas.drawString(width // 2 - 120, height // 2, '你好，世界！')
+pdf_canvas.setFont('Font1', 40)
+pdf_canvas.setFillColorRGB(0, 1, 0, 0.5)
+pdf_canvas.rotate(18)
+pdf_canvas.drawString(250, 250, 'hello, world!')
+
+# 保存
+pdf_canvas.save()
+#endregion
+
+# region    # ------------ 用Pillow处理图像：读取和显示图像 ------------
+from PIL import Image
+
+# 读取图像获得Image对象
+image = Image.open('知乎专栏\\专栏资源\\第026课\\guido.jpg')
+# 通过Image对象的format属性获得图像的格式
+print(image.format) # JPEG
+# 通过Image对象的size属性获得图像的尺寸
+print(image.size)   # (500, 750)
+# 通过Image对象的mode属性获取图像的模式
+print(image.mode)   # RGB
+# 通过Image对象的show方法显示图像
+image.show()
+#endregion
+
+# region    # ------------ 用Pillow处理图像：剪裁图像 ------------
+# 通过Image对象的crop方法指定剪裁区域剪裁图像
+image.crop((80, 20, 310, 360)).show()
+#endregion
+
+# region    # ------------ 用Pillow处理图像：生成缩略图 ------------
+# 通过Image对象的thumbnail方法生成指定尺寸的缩略图
+image.thumbnail((128, 128))
+image.show()
+#endregion
+
+# region    # ------------ 用Pillow处理图像：缩放和黏贴图像 ------------
+# 读取骆昊的照片获得Image对象
+luohao_image = Image.open('luohao.png')
+# 读取吉多的照片获得Image对象
+guido_image = Image.open('guido.jpg')
+# 从吉多的照片上剪裁出吉多的头
+guido_head = guido_image.crop((80, 20, 310, 360))
+width, height = guido_head.size
+# 使用Image对象的resize方法修改图像的尺寸
+# 使用Image对象的paste方法将吉多的头粘贴到骆昊的照片上
+luohao_image.paste(guido_head.resize((int(width / 1.5), int(height / 1.5))), (172, 40))
+luohao_image.show()
+#endregion
+
+# region    # ------------ 用Pillow处理图像：旋转和翻转 ------------
+image = Image.open('guido.jpg')
+# 使用Image对象的rotate方法实现图像的旋转
+image.rotate(45).show()
+# 使用Image对象的transpose方法实现图像翻转
+# Image.FLIP_LEFT_RIGHT - 水平翻转
+# Image.FLIP_TOP_BOTTOM - 垂直翻转
+image.transpose(Image.FLIP_TOP_BOTTOM).show()
+#endregion
+
+# region    # ------------ 用Pillow处理图像：操作像素 ------------
+for x in range(80, 310):
+    for y in range(20, 360):
+        # 通过Image对象的putpixel方法修改图像指定像素点
+        image.putpixel((x, y), (128, 128, 128))
+image.show()
+#endregion
+
+# region    # ------------ 用Pillow处理图像：滤镜效果 ------------
+from PIL import ImageFilter
+
+# 使用Image对象的filter方法对图像进行滤镜处理
+# ImageFilter模块包含了诸多预设的滤镜也可以自定义滤镜
+image.filter(ImageFilter.CONTOUR).show()
+#endregion
+
+# region    # ------------ 使用Pillow绘图 ------------
+import random
+from PIL import Image, ImageDraw, ImageFont
+
+def random_color():
+    """生成随机颜色"""
+    red = random.randint(0, 255)
+    green = random.randint(0, 255)
+    blue = random.randint(0, 255)
+    return red, green, blue
+
+
+width, height = 800, 600
+# 创建一个800*600的图像，背景色为白色
+image = Image.new(mode='RGB', size=(width, height), color=(255, 255, 255))
+# 创建一个ImageDraw对象
+drawer = ImageDraw.Draw(image)
+# 通过指定字体和大小获得ImageFont对象
+font = ImageFont.truetype('Kongxin.ttf', 32)
+# 通过ImageDraw对象的text方法绘制文字
+drawer.text((300, 50), 'Hello, world!', fill=(255, 0, 0), font=font)
+# 通过ImageDraw对象的line方法绘制两条对角直线
+drawer.line((0, 0, width, height), fill=(0, 0, 255), width=2)
+drawer.line((width, 0, 0, height), fill=(0, 0, 255), width=2)
+xy = width // 2 - 60, height // 2 - 60, width // 2 + 60, height // 2 + 60
+# 通过ImageDraw对象的rectangle方法绘制矩形
+drawer.rectangle(xy, outline=(255, 0, 0), width=2)
+# 通过ImageDraw对象的ellipse方法绘制椭圆
+for i in range(4):
+    left, top, right, bottom = 150 + i * 120, 220, 310 + i * 120, 380
+    drawer.ellipse((left, top, right, bottom), outline=random_color(), width=8)
+# 显示图像
+image.show()
+# 保存图像
+image.save('result.png')
+#endregion
+
+# region    # ------------ 用Python发送邮件和短信 ------------
+import smtplib
+from email.header impOort Header
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
+# 创建邮件主体对象
+email = MIMEMultipart()
+# 设置发件人、收件人和主题
+email['From'] = 'xxxxxxxxx@126.com'
+email['To'] = 'yyyyyy@qq.com;zzzzzz@1000phone.com'
+email['Subject'] = Header('上半年工作情况汇报', 'utf-8')
+# 添加邮件正文内容
+content = """据德国媒体报道，当地时间9日，德国火车司机工会成员进行了投票，
+定于当地时间10日起进行全国性罢工，货运交通方面的罢工已于当地时间10日19时开始。
+此后，从11日凌晨2时到13日凌晨2时，德国全国范围内的客运和铁路基础设施将进行48小时的罢工。"""
+email.attach(MIMEText(content, 'plain', 'utf-8'))
+
+# 创建SMTP_SSL对象（连接邮件服务器）
+smtp_obj = smtplib.SMTP_SSL('smtp.126.com', 465)
+# 通过用户名和授权码进行登录
+smtp_obj.login('xxxxxxxxx@126.com', '邮件服务器的授权码')
+# 发送邮件（发件人、收件人、邮件内容（字符串））
+smtp_obj.sendmail(
+    'xxxxxxxxx@126.com',
+    ['yyyyyy@qq.com', 'zzzzzz@1000phone.com'],
+    email.as_string()
+)
+#endregion
+
+# region    # ------------ 发送短信 ------------
+import random
+import requests
+
+def send_message_by_luosimao(tel, message):
+    """发送短信（调用螺丝帽短信网关）"""
+    resp = requests.post(
+        url='http://sms-api.luosimao.com/v1/send.json',
+        auth=('api', 'key-注册成功后平台分配的KEY'),
+        data={
+            'mobile': tel,
+            'message': message
+        },
+        timeout=10,
+        verify=False
+    )
+    return resp.json()
+
+def gen_mobile_code(length=6):
+    """生成指定长度的手机验证码"""
+    return ''.join(random.choices('0123456789', k=length))
+
+def main():
+    code = gen_mobile_code()
+    message = f'您的短信验证码是{code}，打死也不能告诉别人哟！【Python小课】'
+    print(send_message_by_luosimao('13500112233', message))
+
+if __name__ == '__main__':
+    main()
+#endregion
+
+# region    案例：验证输入用户名和QQ号是否有效并给出对应的提示信息。
+"""
+要求：用户名必须由字母、数字或下划线构成且长度在6~20个字符之间，QQ号是5~12的数字且首位不能为0
+"""
+import re
+
+username = input('请输入用户名: ')
+qq = input('请输入QQ号: ')
+# match函数的第一个参数是正则表达式字符串或正则表达式对象
+# match函数的第二个参数是要跟正则表达式做匹配的字符串对象
+m1 = re.match(r'^[0-9a-zA-Z_]{6,20}$', username)
+if not m1:
+    print('请输入有效的用户名.')
+# fullmatch函数要求字符串和正则表达式完全匹配
+# 所以正则表达式没有写起始符和结束符
+m2 = re.fullmatch(r'[1-9]\d{4,11}', qq)
+if not m2:
+    print('请输入有效的QQ号.')
+if m1 and m2:
+    print('你输入的信息是有效的!')
+#endregion
+
+# region    案例：从一段文字中提取出国内手机号码。
+import re
+
+# 创建正则表达式对象，使用了前瞻和回顾来保证手机号前后不应该再出现数字
+pattern = re.compile(r'(?<=\D)1[34578]\d{9}(?=\D)')
+sentence = '''重要的事情说8130123456789遍，我的手机号是13512346789这个靓号，
+不是15600998765，也是110或119，王大锤的手机号才是15600998765。'''
+# 方法一：查找所有匹配并保存到一个列表中
+tels_list = re.findall(pattern, sentence)
+for tel in tels_list:
+    print(tel)
+print('--------华丽的分隔线--------')
+
+# 方法二：通过迭代器取出匹配对象并获得匹配的内容
+for temp in pattern.finditer(sentence):
+    print(temp.group())
+print('--------华丽的分隔线--------')
+
+# 方法三：通过search函数指定搜索位置找出所有匹配
+m = pattern.search(sentence)
+while m:
+    print(m.group())
+    m = pattern.search(sentence, m.end())
+#endregion
+
+# region    案例：替换字符串中的不良内容
+import re
+
+sentence = 'Oh, shit! 你是傻逼吗? Fuck you.'
+purified = re.sub('fuck|shit|[傻煞沙][比笔逼叉缺吊碉雕]',
+                  '*', sentence, flags=re.IGNORECASE)
+print(purified)  # Oh, *! 你是*吗? * you.
+#endregion
+
+# region    案例：拆分长字符串
+import re
+
+poem = '窗前明月光，疑是地上霜。举头望明月，低头思故乡。'
+sentences_list = re.split(r'[，。]', poem)
+sentences_list = [sentence for sentence in sentences_list if sentence]
+for sentence in sentences_list:
+    print(sentence)
+#endregion
+
+# region    # ------------ 爬虫：获取搜狐首页代码 ------------
+import requests
+
+resp = requests.get('https://www.sohu.com/')
+if resp.status_code == 200:
+    print(resp.text)
+#endregion
+
+# region    # ------------ 爬虫：从页面的 HTML 代码中提取新闻的标题和链接 ------------
+import re
+import requests
+
+pattern = re.compile(r'<a.*?href="(.*?)".*?title="(.*?)".*?>')
+resp = requests.get('https://www.sohu.com/')
+if resp.status_code == 200:
+    all_matches = pattern.findall(resp.text)
+    for href, title in all_matches:
+        print(href)
+        print(title)
+#endregion
+
+# region    # ------------ 爬虫：获取logo ------------
+import requests
+
+resp = requests.get('https://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png')
+with open('baidu.png', 'wb') as file:
+    file.write(resp.content)
+#endregion
+
+# region    案例：爬取豆瓣电影
+import random
+import re
+import time
+import requests
+
+for page in range(1, 11):
+    resp = requests.get(
+        url=f'https://movie.douban.com/top250?start={(page - 1) * 25}',
+        # 如果不设置HTTP请求头中的User-Agent，豆瓣会检测出不是浏览器而阻止我们的请求。
+        # 通过get函数的headers参数设置User-Agent的值，具体的值可以在浏览器的开发者工具查看到。
+        # 用爬虫访问大部分网站时，将爬虫伪装成来自浏览器的请求都是非常重要的一步。
+        headers={'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36'}
+    )
+    # 通过正则表达式获取class属性为title且标签体不以&开头的span标签并用捕获组提取标签内容
+    pattern1 = re.compile(r'<span class="title">([^&]*?)</span>')
+    titles = pattern1.findall(resp.text)
+    # 通过正则表达式获取class属性为rating_num的span标签并用捕获组提取标签内容
+    pattern2 = re.compile(r'<span class="rating_num".*?>(.*?)</span>')
+    ranks = pattern2.findall(resp.text)
+    # 使用zip压缩两个列表，循环遍历所有的电影标题和评分
+    for title, rank in zip(titles, ranks):
+        print(title, rank)
+    # 随机休眠1-5秒，避免爬取页面过于频繁
+    time.sleep(random.random() * 4 + 1)
+#endregion
+
+
+
+
 
 
 
